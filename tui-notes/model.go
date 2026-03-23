@@ -1,13 +1,25 @@
 package main
 
-import tea "github.com/charmbracelet/bubbletea"
+import (
+	"github.com/Nishant-28/bubble-tea-notes/tui-notes/store"
+	tea "github.com/charmbracelet/bubbletea"
+)
 
 type model struct {
+	store   store.Store
+	notes   []store.Note
 	message string
 }
 
-func initialModel() model {
+func initialModel(s store.Store) model {
+	notes, err := s.GetNotes()
+	if err != nil {
+		notes = []store.Note{}
+	}
+
 	return model{
+		store:   s,
+		notes:   notes,
 		message: "hello from Bubble Tea!",
 	}
 }
