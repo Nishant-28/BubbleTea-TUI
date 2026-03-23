@@ -1,4 +1,4 @@
-module github.com/nishant-28/tui-notes
+module github.com/nishant-28/bubble-tea-tui
 
 go 1.25.5
 

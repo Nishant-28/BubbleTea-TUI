@@ -5,7 +5,7 @@ import (
 	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/nishant-28/tui-notes/store"
+	"github.com/nishant-28/bubble-tea-tui/store"
 )
 
 func main() {
