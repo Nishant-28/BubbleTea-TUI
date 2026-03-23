@@ -1,8 +1,11 @@
 package main
 
 import (
-	"github.com/Nishant-28/bubble-tea-notes/tui-notes/store"
+	"fmt"
+	"strings"
+
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/nishant-28/bubble-tea-tui/tui-notes/store"
 )
 
 type model struct {
@@ -20,7 +23,7 @@ func initialModel(s store.Store) model {
 	return model{
 		store:   s,
 		notes:   notes,
-		message: "hello from Bubble Tea!",
+		message: "Notes loaded.",
 	}
 }
 
@@ -39,5 +42,22 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	return m.message + "\n\nPress q to quit.\n"
+	var b strings.Builder
+
+	b.WriteString("TUI Notes\n")
+	b.WriteString("=========\n\n")
+	b.WriteString(m.message)
+	b.WriteString(fmt.Sprintf("\nTotal notes: %d\n\n", len(m.notes)))
+
+	if len(m.notes) == 0 {
+		b.WriteString("No notes found in notes.db yet.\n")
+	} else {
+		b.WriteString("Saved notes:\n")
+		for _, note := range m.notes {
+			b.WriteString(fmt.Sprintf("- [%d] %s\n", note.ID, note.Title))
+		}
+	}
+
+	b.WriteString("\nPress q or ctrl+c to quit.\n")
+	return b.String()
 }
