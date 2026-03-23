@@ -1,10 +1,10 @@
 package store
 
 import (
-	"database/sql",
-	"fmt",
+	"database/sql"
+	"fmt"
 
-	_ "github.com/mattn/go=sqlite3"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type SQLiteStore struct {
@@ -21,7 +21,7 @@ func New(dbPath string) (Store, error) {
 		return nil, fmt.Errorf("running migrations: %w", err)
 	}
 
-	return &SQLiteSQLiteStore{db: db}, nil
+	return &SQLiteStore{db: db}, nil
 }
 
 func migrate(db *sql.DB) error {
@@ -32,23 +32,26 @@ func migrate(db *sql.DB) error {
 		body TEXT NOT NULL DEFAULT ''
 	);`
 	_, err := db.Exec(query)
-	retrun err
+	return err
 }
 
 func (s *SQLiteStore) GetNotes() ([]Note, error) {
-    rows, err := s.db.Query("SELECT id, title, body FROM notes ORDER BY id DESC")
-    if err != nil {
-        return nil, fmt.Errorf("querying notes: %w", err)
-    }
-    defer rows.Close()
+	rows, err := s.db.Query("SELECT id, title, body FROM notes ORDER BY id DESC")
+	if err != nil {
+		return nil, fmt.Errorf("querying notes: %w", err)
+	}
+	defer rows.Close()
 
 	var notes []Note
 	for rows.Next() {
 		var n Note
-		if err := rows.Scan(&n.Id, &n.Title, &n.Body); err != nil {
+		if err := rows.Scan(&n.ID, &n.Title, &n.Body); err != nil {
 			return nil, fmt.Errorf("scanning note: %w", err)
 		}
 		notes = append(notes, n)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterating notes: %w", err)
 	}
 	return notes, nil
 }
